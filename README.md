@@ -6,3 +6,6 @@
   * ;)
 
 
+# resources
+
+  * https://stackoverflow.com/questions/32205981/reading-json-files-in-c
