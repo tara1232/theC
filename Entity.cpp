@@ -1,7 +1,10 @@
 
+#include <SFML/Graphics.hpp>
 #include <iostream>
+#include "Entity.hpp"
 
-Entity::Entity(int health_, int attack_, int speed_) {
+Entity::Entity(int width_, int health_, int attack_, int speed_) {
+	width = width_;
 	health = health_;
 	attack = attack_;
 	speed = speed_;
@@ -9,6 +12,7 @@ Entity::Entity(int health_, int attack_, int speed_) {
 
 void Entity::displayState() {
 	std::cout 
+		<< "width: " << width << std::endl
 		<< "health: " << health << std::endl
 		<< "attack: " << attack << std::endl
 		<< "speed: " << speed << std::endl;

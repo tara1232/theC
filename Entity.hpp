@@ -1,10 +1,12 @@
 #ifndef ENTITY
 #define ENTITY
 class Entity {
-	private:
 	public:
-		Entity(int health_, int attack_, int speed_);
-		void displayState();
+		sf::Texture texture;
+		sf::Sprite sprite;
+		int health, attack, width, speed;	
 
+		Entity(int, int, int, int);
+		void displayState();
 };
 #endif

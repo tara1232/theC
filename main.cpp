@@ -16,6 +16,7 @@ int main() {
 	const int MAX_FRAME_RATE = 60;
 	const float moveSpeed = 200;
 	const float switchFrame = 100, frameSpeed = 500;
+	const int chickenWidth = 64;
 
 	// initialize window variables 
 	sf::RenderWindow window;
@@ -30,13 +31,10 @@ int main() {
 	// initialize the game
 	
 	// chicken
-	sf::Texture chickenTexture;
-	sf::Sprite chicken;
-	chickenTexture.loadFromFile("pictures/chicken.png");
-	chicken.setTexture(chickenTexture);
-	const int chickenWidth = 64;
+	Entity chicken(chickenWidth, 10, 10, 10);
+	chicken.texture.loadFromFile("pictures/chicken.png");
+	chicken.sprite.setTexture(chicken.texture);
 	sf::Vector2f offset(chickenWidth/2, chickenWidth/2);
-	// put all this in the Entity class!!!
 	sf::Vector2f pos(screenDimensions.x/2, screenDimensions.y/2);
 
 	sf::RectangleShape boundingBox(sf::Vector2f(chickenWidth, chickenWidth));
@@ -88,7 +86,7 @@ int main() {
 			pos.y += moveSpeed*dt;
 		}	
 
-		chicken.setTextureRect(sf::IntRect(chickenWidth, chickenWidth, chickenWidth, chickenWidth));
+		chicken.sprite.setTextureRect(sf::IntRect(chickenWidth, chickenWidth, chickenWidth, chickenWidth));
 
 		view.setCenter(pos);
 
@@ -96,12 +94,12 @@ int main() {
 		window.clear(sf::Color(49, 100, 183,200));
 
 		window.setView(view);
-		chicken.setPosition(pos-offset);
-		window.draw(chicken);
+		chicken.sprite.setPosition(pos-offset);
+		window.draw(chicken.sprite);
 		boundingBox.setPosition(pos-offset);
 		window.draw(boundingBox);
-		chicken.setPosition(0, 0);
-		window.draw(chicken);
+		chicken.sprite.setPosition(0, 0);
+		window.draw(chicken.sprite);
 
 		window.display();
 	}
