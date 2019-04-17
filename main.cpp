@@ -31,9 +31,8 @@ int main() {
 	// initialize the game
 	
 	// chicken
-	Entity chicken(chickenWidth, 10, 10, 10);
-	chicken.texture.loadFromFile("pictures/chicken.png");
-	chicken.sprite.setTexture(chicken.texture);
+	Entity chicken(10, 10, 10);
+	chicken.initImage("pictures/chicken.png", chickenWidth, sf::Vector2i(2,2));
 	sf::Vector2f offset(chickenWidth/2, chickenWidth/2);
 	sf::Vector2f pos(screenDimensions.x/2, screenDimensions.y/2);
 
@@ -70,6 +69,7 @@ int main() {
 
 		frameCounter += frameSpeed*dt;
 		if(frameCounter >= switchFrame){
+			chicken.nextFrame();
 			frameCounter = 0;
 		}
 
@@ -86,12 +86,12 @@ int main() {
 			pos.y += moveSpeed*dt;
 		}	
 
-		chicken.sprite.setTextureRect(sf::IntRect(chickenWidth, chickenWidth, chickenWidth, chickenWidth));
+		chicken.setAniState();
 
 		view.setCenter(pos);
 
 		// clear, draw, display (in that order!)
-		window.clear(sf::Color(49, 100, 183,200));
+		window.clear(sf::Color(49, 100, 183, 200)); // lightish blue
 
 		window.setView(view);
 		chicken.sprite.setPosition(pos-offset);
