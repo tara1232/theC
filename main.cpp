@@ -31,7 +31,7 @@ int main() {
 
 	// constants
 	sf::Vector2f screenDimensions(1024, 512);
-	sf::Vector2f worldDimension(2048, 2048);
+	sf::Vector2f worldDimensions(2048, 2048);
 	const int mapSize = 32;
 	const int tileWidth = 64;
 	const int MAX_FRAME_RATE = 60;
@@ -46,9 +46,18 @@ int main() {
 	window.create(sf::VideoMode(screenDimensions.x, screenDimensions.y), "theC");
 	window.setFramerateLimit(MAX_FRAME_RATE);
 
+	// views
 	sf::View view(sf::Vector2f(0, 0), screenDimensions);
+	view.setViewport(sf::FloatRect(0.0f,0.0f,1.0f,1.0f));
+	sf::View minimap(sf::Vector2f(worldDimensions.x/2,worldDimensions.y/2), worldDimensions);
+	minimap.setViewport(sf::FloatRect(0.75f, 0.0f, 0.25f, 0.25f));
+
+
 	sf::Clock clock;
 	float dt, frameCounter;
+
+	bool paused = false;
+	bool showMap = true;
 
 	// read config data
 	const std::map<char, int> mapData = {{'s', 0}, {'f', 1}, {'g', 2}, {'w', 3}};
@@ -77,6 +86,10 @@ int main() {
 	sf::RectangleShape boundingBox(sf::Vector2f(chickenWidth, chickenWidth));
 	boundingBox.setFillColor(sf::Color(0,255,0,75));
 
+	sf::RectangleShape blipBox(sf::Vector2f(chickenWidth, chickenWidth));
+	blipBox.setFillColor(sf::Color(255,0,0,255));
+
+
 	// unicorn
 	Entity unicorn(10, 10, 10);
 	unicorn.initImage("pictures/unicorn.png", unicornWidth, sf::Vector2i(4,2));
@@ -100,6 +113,25 @@ int main() {
 				case sf::Event::KeyPressed:
 					if(event.key.code == sf::Keyboard::Q)
 						window.close();
+					else if(event.key.code == sf::Keyboard::I){
+						if(screenDimensions.x *2 <= worldDimensions.x){
+							screenDimensions.x *= 2;
+							screenDimensions.y *= 2;
+							view.setSize(screenDimensions);
+						}
+					}
+					else if(event.key.code == sf::Keyboard::O){
+						if(screenDimensions.x / 2 >= tileWidth){
+							screenDimensions.x /= 2;
+							screenDimensions.y /= 2;
+							view.setSize(screenDimensions);
+						}
+					} 
+					break;
+				case sf::Event::KeyReleased:
+					if(event.key.code == sf::Keyboard::M){
+						showMap = !showMap;
+					}
 					break;
 				case sf::Event::Resized:
 					screenDimensions.x = event.size.width;
@@ -150,13 +182,13 @@ int main() {
 		cameraPos.x = pos.x + chickenWidth/2;
 		if (cameraPos.x < screenDimensions.x/2)
 			cameraPos.x = screenDimensions.x/2;
-		if (cameraPos.x > worldDimension.x -screenDimensions.x/2)
-			cameraPos.x = worldDimension.x -screenDimensions.x/2;
+		if (cameraPos.x > worldDimensions.x -screenDimensions.x/2)
+			cameraPos.x = worldDimensions.x -screenDimensions.x/2;
 		cameraPos.y = pos.y + chickenWidth/2;
 		if (cameraPos.y < screenDimensions.y/2)
 			cameraPos.y = screenDimensions.y/2;
-		if (cameraPos.y > worldDimension.y - screenDimensions.y/2)
-			cameraPos.y = worldDimension.y - screenDimensions.y/2;
+		if (cameraPos.y > worldDimensions.y - screenDimensions.y/2)
+			cameraPos.y = worldDimensions.y - screenDimensions.y/2;
 		view.setCenter(cameraPos);
 
 		// clear, draw, display (in that order!)
@@ -184,6 +216,19 @@ int main() {
 		window.draw(boundingBox);
 		chicken.sprite.setPosition(0, 0);
 		window.draw(chicken.sprite);
+
+		if (showMap) {
+			window.setView(minimap);
+			for (int i = 0; i < mapSize; i++) {
+				for (int j = 0; j < mapSize; j++) {
+					tileSprite.setTextureRect(sf::IntRect(map[i][j]*tileWidth, 0, tileWidth, tileWidth));
+					tileSprite.setPosition(j*tileWidth, i*tileWidth);
+					window.draw(tileSprite);
+				}
+			}
+			blipBox.setPosition(pos);
+			window.draw(blipBox);
+		}
 
 		window.display();
 	}
